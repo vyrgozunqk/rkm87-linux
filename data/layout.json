@@ -1,0 +1,1224 @@
+[
+  {
+    "id": "K1",
+    "name": "Esc",
+    "rect": [
+      27,
+      71,
+      53,
+      100
+    ],
+    "scancode": 27,
+    "matrix_idx": 0,
+    "default_dword": 687865856
+  },
+  {
+    "id": "K2",
+    "name": "F1",
+    "rect": [
+      77,
+      71,
+      103,
+      100
+    ],
+    "scancode": 112,
+    "matrix_idx": 6,
+    "default_dword": 973078528
+  },
+  {
+    "id": "K3",
+    "name": "F2",
+    "rect": [
+      116,
+      71,
+      142,
+      100
+    ],
+    "scancode": 113,
+    "matrix_idx": 12,
+    "default_dword": 989855744
+  },
+  {
+    "id": "K4",
+    "name": "F3",
+    "rect": [
+      156,
+      71,
+      182,
+      100
+    ],
+    "scancode": 114,
+    "matrix_idx": 18,
+    "default_dword": 1006632960
+  },
+  {
+    "id": "K5",
+    "name": "F4",
+    "rect": [
+      195,
+      71,
+      221,
+      100
+    ],
+    "scancode": 115,
+    "matrix_idx": 24,
+    "default_dword": 1023410176
+  },
+  {
+    "id": "K6",
+    "name": "F5",
+    "rect": [
+      243,
+      70,
+      269,
+      99
+    ],
+    "scancode": 116,
+    "matrix_idx": 30,
+    "default_dword": 1040187392
+  },
+  {
+    "id": "K7",
+    "name": "F6",
+    "rect": [
+      283,
+      70,
+      309,
+      99
+    ],
+    "scancode": 117,
+    "matrix_idx": 36,
+    "default_dword": 1056964608
+  },
+  {
+    "id": "K8",
+    "name": "F7",
+    "rect": [
+      322,
+      70,
+      348,
+      99
+    ],
+    "scancode": 118,
+    "matrix_idx": 42,
+    "default_dword": 1073741824
+  },
+  {
+    "id": "K9",
+    "name": "F8",
+    "rect": [
+      362,
+      70,
+      388,
+      99
+    ],
+    "scancode": 119,
+    "matrix_idx": 48,
+    "default_dword": 1090519040
+  },
+  {
+    "id": "K10",
+    "name": "F9",
+    "rect": [
+      410,
+      71,
+      436,
+      100
+    ],
+    "scancode": 120,
+    "matrix_idx": 54,
+    "default_dword": 1107296256
+  },
+  {
+    "id": "K11",
+    "name": "F10",
+    "rect": [
+      449,
+      71,
+      475,
+      100
+    ],
+    "scancode": 121,
+    "matrix_idx": 60,
+    "default_dword": 1124073472
+  },
+  {
+    "id": "K12",
+    "name": "F11",
+    "rect": [
+      488,
+      72,
+      514,
+      101
+    ],
+    "scancode": 122,
+    "matrix_idx": 66,
+    "default_dword": 1140850688
+  },
+  {
+    "id": "K13",
+    "name": "F12",
+    "rect": [
+      528,
+      72,
+      554,
+      101
+    ],
+    "scancode": 123,
+    "matrix_idx": 72,
+    "default_dword": 1157627904
+  },
+  {
+    "id": "K14",
+    "name": "`",
+    "rect": [
+      27,
+      121,
+      53,
+      150
+    ],
+    "scancode": 192,
+    "matrix_idx": 1,
+    "default_dword": 889192448
+  },
+  {
+    "id": "K15",
+    "name": "1",
+    "rect": [
+      66,
+      121,
+      92,
+      150
+    ],
+    "scancode": 49,
+    "matrix_idx": 7,
+    "default_dword": 503316480
+  },
+  {
+    "id": "K16",
+    "name": "2",
+    "rect": [
+      106,
+      121,
+      132,
+      150
+    ],
+    "scancode": 50,
+    "matrix_idx": 13,
+    "default_dword": 520093696
+  },
+  {
+    "id": "K17",
+    "name": "3",
+    "rect": [
+      145,
+      121,
+      171,
+      150
+    ],
+    "scancode": 51,
+    "matrix_idx": 19,
+    "default_dword": 536870912
+  },
+  {
+    "id": "K18",
+    "name": "4",
+    "rect": [
+      185,
+      121,
+      211,
+      150
+    ],
+    "scancode": 52,
+    "matrix_idx": 25,
+    "default_dword": 553648128
+  },
+  {
+    "id": "K19",
+    "name": "5",
+    "rect": [
+      224,
+      121,
+      250,
+      150
+    ],
+    "scancode": 53,
+    "matrix_idx": 31,
+    "default_dword": 570425344
+  },
+  {
+    "id": "K20",
+    "name": "6",
+    "rect": [
+      263,
+      121,
+      289,
+      150
+    ],
+    "scancode": 54,
+    "matrix_idx": 37,
+    "default_dword": 587202560
+  },
+  {
+    "id": "K21",
+    "name": "7",
+    "rect": [
+      303,
+      121,
+      329,
+      150
+    ],
+    "scancode": 55,
+    "matrix_idx": 43,
+    "default_dword": 603979776
+  },
+  {
+    "id": "K22",
+    "name": "8",
+    "rect": [
+      342,
+      121,
+      368,
+      150
+    ],
+    "scancode": 56,
+    "matrix_idx": 49,
+    "default_dword": 620756992
+  },
+  {
+    "id": "K23",
+    "name": "9",
+    "rect": [
+      382,
+      121,
+      408,
+      150
+    ],
+    "scancode": 57,
+    "matrix_idx": 55,
+    "default_dword": 637534208
+  },
+  {
+    "id": "K24",
+    "name": "0",
+    "rect": [
+      421,
+      121,
+      447,
+      150
+    ],
+    "scancode": 48,
+    "matrix_idx": 61,
+    "default_dword": 654311424
+  },
+  {
+    "id": "K25",
+    "name": "-",
+    "rect": [
+      461,
+      121,
+      487,
+      150
+    ],
+    "scancode": 189,
+    "matrix_idx": 67,
+    "default_dword": 754974720
+  },
+  {
+    "id": "K26",
+    "name": "=",
+    "rect": [
+      500,
+      121,
+      526,
+      150
+    ],
+    "scancode": 187,
+    "matrix_idx": 73,
+    "default_dword": 771751936
+  },
+  {
+    "id": "K27",
+    "name": "Backspace",
+    "rect": [
+      540,
+      121,
+      604,
+      150
+    ],
+    "scancode": 8,
+    "matrix_idx": 79,
+    "default_dword": 704643072
+  },
+  {
+    "id": "K28",
+    "name": "Calc",
+    "rect": [
+      579,
+      71,
+      605,
+      100
+    ],
+    "scancode": 153,
+    "matrix_idx": 78,
+    "default_dword": 2449539074
+  },
+  {
+    "id": "K29",
+    "name": "PrtSc",
+    "rect": [
+      629,
+      71,
+      655,
+      100
+    ],
+    "scancode": 44,
+    "matrix_idx": 84,
+    "default_dword": 1174405120
+  },
+  {
+    "id": "K30",
+    "name": "SrcLock",
+    "rect": [
+      669,
+      71,
+      695,
+      100
+    ],
+    "scancode": 145,
+    "matrix_idx": 90,
+    "default_dword": 1191182336
+  },
+  {
+    "id": "K31",
+    "name": "Pause",
+    "rect": [
+      708,
+      71,
+      734,
+      100
+    ],
+    "scancode": 19,
+    "matrix_idx": 96,
+    "default_dword": 1207959552
+  },
+  {
+    "id": "K32",
+    "name": "Tab",
+    "rect": [
+      27,
+      160,
+      72,
+      189
+    ],
+    "scancode": 9,
+    "matrix_idx": 2,
+    "default_dword": 721420288
+  },
+  {
+    "id": "K33",
+    "name": "Q",
+    "rect": [
+      86,
+      160,
+      112,
+      189
+    ],
+    "scancode": 81,
+    "matrix_idx": 8,
+    "default_dword": 335544320
+  },
+  {
+    "id": "K34",
+    "name": "W",
+    "rect": [
+      126,
+      160,
+      152,
+      189
+    ],
+    "scancode": 87,
+    "matrix_idx": 14,
+    "default_dword": 436207616
+  },
+  {
+    "id": "K35",
+    "name": "E",
+    "rect": [
+      165,
+      160,
+      191,
+      189
+    ],
+    "scancode": 69,
+    "matrix_idx": 20,
+    "default_dword": 134217728
+  },
+  {
+    "id": "K36",
+    "name": "R",
+    "rect": [
+      205,
+      160,
+      231,
+      189
+    ],
+    "scancode": 82,
+    "matrix_idx": 26,
+    "default_dword": 352321536
+  },
+  {
+    "id": "K37",
+    "name": "T",
+    "rect": [
+      244,
+      160,
+      270,
+      189
+    ],
+    "scancode": 84,
+    "matrix_idx": 32,
+    "default_dword": 385875968
+  },
+  {
+    "id": "K38",
+    "name": "Y",
+    "rect": [
+      283,
+      160,
+      309,
+      189
+    ],
+    "scancode": 89,
+    "matrix_idx": 38,
+    "default_dword": 469762048
+  },
+  {
+    "id": "K39",
+    "name": "U",
+    "rect": [
+      323,
+      160,
+      349,
+      189
+    ],
+    "scancode": 85,
+    "matrix_idx": 44,
+    "default_dword": 402653184
+  },
+  {
+    "id": "K40",
+    "name": "I",
+    "rect": [
+      362,
+      160,
+      388,
+      189
+    ],
+    "scancode": 73,
+    "matrix_idx": 50,
+    "default_dword": 201326592
+  },
+  {
+    "id": "K41",
+    "name": "O",
+    "rect": [
+      402,
+      160,
+      428,
+      189
+    ],
+    "scancode": 79,
+    "matrix_idx": 56,
+    "default_dword": 301989888
+  },
+  {
+    "id": "K42",
+    "name": "P",
+    "rect": [
+      441,
+      160,
+      467,
+      189
+    ],
+    "scancode": 80,
+    "matrix_idx": 62,
+    "default_dword": 318767104
+  },
+  {
+    "id": "K43",
+    "name": "[",
+    "rect": [
+      481,
+      160,
+      507,
+      189
+    ],
+    "scancode": 219,
+    "matrix_idx": 68,
+    "default_dword": 788529152
+  },
+  {
+    "id": "K44",
+    "name": "]",
+    "rect": [
+      520,
+      160,
+      546,
+      189
+    ],
+    "scancode": 221,
+    "matrix_idx": 74,
+    "default_dword": 805306368
+  },
+  {
+    "id": "K45",
+    "name": "\\",
+    "rect": [
+      559,
+      160,
+      604,
+      189
+    ],
+    "scancode": 220,
+    "matrix_idx": 80,
+    "default_dword": 822083584
+  },
+  {
+    "id": "K46",
+    "name": "Insert",
+    "rect": [
+      629,
+      121,
+      655,
+      150
+    ],
+    "scancode": 45,
+    "matrix_idx": 85,
+    "default_dword": 1224736768
+  },
+  {
+    "id": "K47",
+    "name": "Home",
+    "rect": [
+      668,
+      121,
+      694,
+      150
+    ],
+    "scancode": 36,
+    "matrix_idx": 91,
+    "default_dword": 1241513984
+  },
+  {
+    "id": "K48",
+    "name": "PgUp",
+    "rect": [
+      708,
+      121,
+      734,
+      150
+    ],
+    "scancode": 33,
+    "matrix_idx": 97,
+    "default_dword": 1258291200
+  },
+  {
+    "id": "K49",
+    "name": "CapsLock",
+    "rect": [
+      27,
+      199,
+      82,
+      228
+    ],
+    "scancode": 20,
+    "matrix_idx": 3,
+    "default_dword": 956301312
+  },
+  {
+    "id": "K50",
+    "name": "A",
+    "rect": [
+      96,
+      199,
+      122,
+      228
+    ],
+    "scancode": 65,
+    "matrix_idx": 9,
+    "default_dword": 67108864
+  },
+  {
+    "id": "K51",
+    "name": "S",
+    "rect": [
+      136,
+      199,
+      162,
+      228
+    ],
+    "scancode": 83,
+    "matrix_idx": 15,
+    "default_dword": 369098752
+  },
+  {
+    "id": "K52",
+    "name": "D",
+    "rect": [
+      175,
+      199,
+      201,
+      228
+    ],
+    "scancode": 68,
+    "matrix_idx": 21,
+    "default_dword": 117440512
+  },
+  {
+    "id": "K53",
+    "name": "F",
+    "rect": [
+      215,
+      199,
+      241,
+      228
+    ],
+    "scancode": 70,
+    "matrix_idx": 27,
+    "default_dword": 150994944
+  },
+  {
+    "id": "K54",
+    "name": "G",
+    "rect": [
+      254,
+      199,
+      280,
+      228
+    ],
+    "scancode": 71,
+    "matrix_idx": 33,
+    "default_dword": 167772160
+  },
+  {
+    "id": "K55",
+    "name": "H",
+    "rect": [
+      293,
+      199,
+      319,
+      228
+    ],
+    "scancode": 72,
+    "matrix_idx": 39,
+    "default_dword": 184549376
+  },
+  {
+    "id": "K56",
+    "name": "J",
+    "rect": [
+      333,
+      199,
+      359,
+      228
+    ],
+    "scancode": 74,
+    "matrix_idx": 45,
+    "default_dword": 218103808
+  },
+  {
+    "id": "K57",
+    "name": "K",
+    "rect": [
+      372,
+      199,
+      398,
+      228
+    ],
+    "scancode": 75,
+    "matrix_idx": 51,
+    "default_dword": 234881024
+  },
+  {
+    "id": "K58",
+    "name": "L",
+    "rect": [
+      412,
+      199,
+      438,
+      228
+    ],
+    "scancode": 76,
+    "matrix_idx": 57,
+    "default_dword": 251658240
+  },
+  {
+    "id": "K59",
+    "name": ";",
+    "rect": [
+      451,
+      199,
+      477,
+      228
+    ],
+    "scancode": 186,
+    "matrix_idx": 63,
+    "default_dword": 855638016
+  },
+  {
+    "id": "K60",
+    "name": "'",
+    "rect": [
+      490,
+      199,
+      516,
+      228
+    ],
+    "scancode": 222,
+    "matrix_idx": 69,
+    "default_dword": 872415232
+  },
+  {
+    "id": "K61",
+    "name": "Enter",
+    "rect": [
+      533,
+      199,
+      605,
+      228
+    ],
+    "scancode": 13,
+    "matrix_idx": 81,
+    "default_dword": 671088640
+  },
+  {
+    "id": "K62",
+    "name": "Delete",
+    "rect": [
+      629,
+      160,
+      655,
+      189
+    ],
+    "scancode": 46,
+    "matrix_idx": 86,
+    "default_dword": 1275068416
+  },
+  {
+    "id": "K63",
+    "name": "End",
+    "rect": [
+      668,
+      160,
+      694,
+      189
+    ],
+    "scancode": 35,
+    "matrix_idx": 92,
+    "default_dword": 1291845632
+  },
+  {
+    "id": "K64",
+    "name": "PgDn",
+    "rect": [
+      708,
+      160,
+      734,
+      189
+    ],
+    "scancode": 34,
+    "matrix_idx": 98,
+    "default_dword": 1308622848
+  },
+  {
+    "id": "K65",
+    "name": "LShift",
+    "rect": [
+      27,
+      238,
+      101,
+      267
+    ],
+    "scancode": 160,
+    "matrix_idx": 4,
+    "default_dword": 512
+  },
+  {
+    "id": "K66",
+    "name": "Z",
+    "rect": [
+      116,
+      239,
+      142,
+      268
+    ],
+    "scancode": 90,
+    "matrix_idx": 10,
+    "default_dword": 486539264
+  },
+  {
+    "id": "K67",
+    "name": "X",
+    "rect": [
+      156,
+      239,
+      182,
+      268
+    ],
+    "scancode": 88,
+    "matrix_idx": 16,
+    "default_dword": 452984832
+  },
+  {
+    "id": "K68",
+    "name": "C",
+    "rect": [
+      196,
+      239,
+      222,
+      268
+    ],
+    "scancode": 67,
+    "matrix_idx": 22,
+    "default_dword": 100663296
+  },
+  {
+    "id": "K69",
+    "name": "V",
+    "rect": [
+      235,
+      239,
+      261,
+      268
+    ],
+    "scancode": 86,
+    "matrix_idx": 28,
+    "default_dword": 419430400
+  },
+  {
+    "id": "K70",
+    "name": "B",
+    "rect": [
+      273,
+      239,
+      299,
+      268
+    ],
+    "scancode": 66,
+    "matrix_idx": 34,
+    "default_dword": 83886080
+  },
+  {
+    "id": "K71",
+    "name": "N",
+    "rect": [
+      313,
+      239,
+      339,
+      268
+    ],
+    "scancode": 78,
+    "matrix_idx": 40,
+    "default_dword": 285212672
+  },
+  {
+    "id": "K72",
+    "name": "M",
+    "rect": [
+      352,
+      239,
+      378,
+      268
+    ],
+    "scancode": 77,
+    "matrix_idx": 46,
+    "default_dword": 268435456
+  },
+  {
+    "id": "K73",
+    "name": ",",
+    "rect": [
+      392,
+      239,
+      418,
+      268
+    ],
+    "scancode": 188,
+    "matrix_idx": 52,
+    "default_dword": 905969664
+  },
+  {
+    "id": "K74",
+    "name": ".",
+    "rect": [
+      431,
+      239,
+      457,
+      268
+    ],
+    "scancode": 190,
+    "matrix_idx": 58,
+    "default_dword": 922746880
+  },
+  {
+    "id": "K75",
+    "name": "/",
+    "rect": [
+      470,
+      239,
+      496,
+      268
+    ],
+    "scancode": 191,
+    "matrix_idx": 64,
+    "default_dword": 939524096
+  },
+  {
+    "id": "K76",
+    "name": "RShift",
+    "rect": [
+      512,
+      238,
+      604,
+      267
+    ],
+    "scancode": 161,
+    "matrix_idx": 82,
+    "default_dword": 8192
+  },
+  {
+    "id": "K77",
+    "name": "Up",
+    "rect": [
+      668,
+      237,
+      694,
+      266
+    ],
+    "scancode": 38,
+    "matrix_idx": 94,
+    "default_dword": 1375731712
+  },
+  {
+    "id": "K78",
+    "name": "RCtrl",
+    "rect": [
+      568,
+      277,
+      604,
+      306
+    ],
+    "scancode": 163,
+    "matrix_idx": 83,
+    "default_dword": 4096
+  },
+  {
+    "id": "K79",
+    "name": "LCtrl",
+    "rect": [
+      27,
+      277,
+      63,
+      306
+    ],
+    "scancode": 162,
+    "matrix_idx": 5,
+    "default_dword": 256
+  },
+  {
+    "id": "K80",
+    "name": "LWin",
+    "rect": [
+      76,
+      277,
+      112,
+      306
+    ],
+    "scancode": 91,
+    "matrix_idx": 11,
+    "default_dword": 2048
+  },
+  {
+    "id": "K81",
+    "name": "LAlt",
+    "rect": [
+      125,
+      277,
+      161,
+      306
+    ],
+    "scancode": 164,
+    "matrix_idx": 17,
+    "default_dword": 1024
+  },
+  {
+    "id": "K82",
+    "name": "Space",
+    "rect": [
+      178,
+      278,
+      408,
+      307
+    ],
+    "scancode": 32,
+    "matrix_idx": 35,
+    "default_dword": 738197504
+  },
+  {
+    "id": "K83",
+    "name": "RAlt",
+    "rect": [
+      421,
+      277,
+      457,
+      306
+    ],
+    "scancode": 165,
+    "matrix_idx": 53,
+    "default_dword": 16384
+  },
+  {
+    "id": "K84",
+    "name": "FN",
+    "rect": [
+      469,
+      277,
+      505,
+      306
+    ],
+    "scancode": 250,
+    "matrix_idx": 59,
+    "default_dword": 13
+  },
+  {
+    "id": "K85",
+    "name": "App",
+    "rect": [
+      519,
+      277,
+      555,
+      306
+    ],
+    "scancode": 93,
+    "matrix_idx": 65,
+    "default_dword": 1694498816
+  },
+  {
+    "id": "K86",
+    "name": "Left",
+    "rect": [
+      629,
+      279,
+      655,
+      308
+    ],
+    "scancode": 37,
+    "matrix_idx": 89,
+    "default_dword": 1342177280
+  },
+  {
+    "id": "K87",
+    "name": "Down",
+    "rect": [
+      668,
+      278,
+      694,
+      307
+    ],
+    "scancode": 40,
+    "matrix_idx": 95,
+    "default_dword": 1358954496
+  },
+  {
+    "id": "K88",
+    "name": "Right",
+    "rect": [
+      708,
+      279,
+      734,
+      308
+    ],
+    "scancode": 39,
+    "matrix_idx": 101,
+    "default_dword": 1325400064
+  },
+  {
+    "id": "K89",
+    "name": "Home_key",
+    "rect": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "scancode": 1,
+    "matrix_idx": 93,
+    "default_dword": 218103815
+  },
+  {
+    "id": "K90",
+    "name": "Mute_key",
+    "rect": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "scancode": 1,
+    "matrix_idx": 99,
+    "default_dword": 234881031
+  },
+  {
+    "id": "K91",
+    "name": "Stop",
+    "rect": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "scancode": 138,
+    "matrix_idx": 23,
+    "default_dword": 3070230530
+  },
+  {
+    "id": "K92",
+    "name": "PrevTr",
+    "rect": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "scancode": 139,
+    "matrix_idx": 29,
+    "default_dword": 3053453314
+  },
+  {
+    "id": "K93",
+    "name": "PlayPause",
+    "rect": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "scancode": 137,
+    "matrix_idx": 41,
+    "default_dword": 3439329282
+  },
+  {
+    "id": "K94",
+    "name": "NextTr",
+    "rect": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "scancode": 140,
+    "matrix_idx": 47,
+    "default_dword": 3036676098
+  }
+]

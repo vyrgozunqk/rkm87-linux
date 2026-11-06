@@ -1,0 +1,13 @@
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Royal Kludge M87 Studio
+GenericName=Keyboard Driver & RGB Studio
+Comment=Native Linux control suite, RGB lighting, LCD screen animations and key remapper for RK M87
+Exec=rkm87
+Icon=rkm87
+Terminal=false
+Categories=Utility;Settings;HardwareSettings;
+Keywords=keyboard;rgb;rk;m87;sinowealth;
+StartupNotify=true

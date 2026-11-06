@@ -1,0 +1,27 @@
+# Byte-compiled / optimized files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions / compiled objects
+*.so
+*.o
+
+# Virtual environments
+.venv/
+env/
+venv/
+ENV/
+
+# Scratch and test output
+scratch/
+*.tmp
+*.log
+*.hex
+
+# IDE and OS files
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*~

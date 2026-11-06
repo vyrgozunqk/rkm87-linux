@@ -1,0 +1,7 @@
+# Royal Kludge RK M87 Mechanical Keyboard (SinoWealth MCU)
+# Grants non-root user permissions for GUI studio, CLI, and daemon
+
+# Covers Wired Cable Mode (PID 0x01A2), 2.4GHz Dongle (PID 0x0150), and SinoWealth VID 0x258A
+SUBSYSTEM=="hidraw", ATTRS{idVendor}=="258a", MODE="0666", TAG+="uaccess"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="258a", MODE="0666", TAG+="uaccess"
+KERNEL=="hidraw*", ATTRS{idVendor}=="258a", MODE="0666", TAG+="uaccess"

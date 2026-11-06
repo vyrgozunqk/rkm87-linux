@@ -1,0 +1,443 @@
+{
+  "modes": [
+    {
+      "id": 0,
+      "name": "Off"
+    },
+    {
+      "id": 1,
+      "name": "Static / Steady"
+    },
+    {
+      "id": 2,
+      "name": "Breathing"
+    },
+    {
+      "id": 3,
+      "name": "Rainbow"
+    },
+    {
+      "id": 4,
+      "name": "Flash Away"
+    },
+    {
+      "id": 5,
+      "name": "Raindrops"
+    },
+    {
+      "id": 6,
+      "name": "Rainbow Wheel"
+    },
+    {
+      "id": 7,
+      "name": "Ripple"
+    },
+    {
+      "id": 8,
+      "name": "Twinkling Stars"
+    },
+    {
+      "id": 9,
+      "name": "Fading Trail / Marquee"
+    },
+    {
+      "id": 10,
+      "name": "Retro Snake"
+    },
+    {
+      "id": 11,
+      "name": "Neon Stream"
+    },
+    {
+      "id": 12,
+      "name": "Reactive"
+    },
+    {
+      "id": 13,
+      "name": "Sine Wave"
+    },
+    {
+      "id": 14,
+      "name": "Side Scan"
+    },
+    {
+      "id": 15,
+      "name": "Rotating Windmill"
+    },
+    {
+      "id": 16,
+      "name": "Waterfall"
+    },
+    {
+      "id": 17,
+      "name": "Blossoming"
+    }
+  ],
+  "music_modes": [
+    {
+      "id": 1,
+      "tag": "tc_music_mode1",
+      "name": "Effect1"
+    },
+    {
+      "id": 2,
+      "tag": "tc_music_mode2",
+      "name": "Effect2"
+    },
+    {
+      "id": 3,
+      "tag": "tc_music_mode3",
+      "name": "Effect3"
+    },
+    {
+      "id": 4,
+      "tag": "tc_music_mode4",
+      "name": "Effect4"
+    },
+    {
+      "id": 5,
+      "tag": "tc_music_mode5",
+      "name": "Effect5"
+    },
+    {
+      "id": 6,
+      "tag": "tc_music_mode6",
+      "name": "Effect6"
+    },
+    {
+      "id": 7,
+      "tag": "tc_music_mode7",
+      "name": "Effect7"
+    },
+    {
+      "id": 8,
+      "tag": "tc_music_mode8",
+      "name": "Effect8"
+    },
+    {
+      "id": 9,
+      "tag": "tc_music_mode9",
+      "name": "Effect9"
+    },
+    {
+      "id": 10,
+      "tag": "tc_music_mode10",
+      "name": "Effect10"
+    }
+  ],
+  "equalizer_bands": [
+    [
+      [
+        "ctrl"
+      ],
+      [
+        "shift"
+      ],
+      [
+        "caps"
+      ],
+      [
+        "tab"
+      ],
+      [
+        "~"
+      ],
+      [
+        "esc"
+      ]
+    ],
+    [
+      [
+        "win",
+        "alt"
+      ],
+      [
+        "z",
+        "x"
+      ],
+      [
+        "a",
+        "s"
+      ],
+      [
+        "q",
+        "w"
+      ],
+      [
+        "1",
+        "2",
+        "3"
+      ],
+      [
+        "f1",
+        "f2"
+      ]
+    ],
+    [
+      [
+        "c",
+        "v"
+      ],
+      [
+        "d",
+        "f"
+      ],
+      [
+        "e",
+        "r"
+      ],
+      [
+        "4",
+        "5"
+      ],
+      [
+        "f3",
+        "f4"
+      ]
+    ],
+    [
+      [
+        "space"
+      ],
+      [
+        "b"
+      ],
+      [
+        "g",
+        "h"
+      ],
+      [
+        "t",
+        "y"
+      ],
+      [
+        "6",
+        "7"
+      ],
+      [
+        "f5",
+        "f6"
+      ]
+    ],
+    [
+      [
+        "n",
+        "m"
+      ],
+      [
+        "j",
+        "k"
+      ],
+      [
+        "u",
+        "i"
+      ],
+      [
+        "8",
+        "9"
+      ],
+      [
+        "f7",
+        "f8"
+      ]
+    ],
+    [
+      [
+        "ralt"
+      ],
+      [
+        "<",
+        ">"
+      ],
+      [
+        "l"
+      ],
+      [
+        "o"
+      ],
+      [
+        "0"
+      ],
+      [
+        "f9"
+      ]
+    ],
+    [
+      [
+        "fn"
+      ],
+      [
+        "?"
+      ],
+      [
+        ";",
+        "'"
+      ],
+      [
+        "p",
+        "["
+      ],
+      [
+        "-",
+        "="
+      ],
+      [
+        "f10",
+        "f11"
+      ]
+    ],
+    [
+      [
+        "app",
+        "rctrl"
+      ],
+      [
+        "rshift"
+      ],
+      [
+        "enter"
+      ],
+      [
+        "]",
+        "|"
+      ],
+      [
+        "back"
+      ],
+      [
+        "f12",
+        "cal"
+      ]
+    ],
+    [
+      [
+        "left"
+      ],
+      [
+        "del"
+      ],
+      [
+        "ins"
+      ],
+      [
+        "print"
+      ]
+    ],
+    [
+      [
+        "down"
+      ],
+      [
+        "up"
+      ],
+      [
+        "end"
+      ],
+      [
+        "home"
+      ],
+      [
+        "scroll"
+      ]
+    ],
+    [
+      [
+        "right"
+      ],
+      [
+        "pgdn"
+      ],
+      [
+        "pgup"
+      ],
+      [
+        "pause"
+      ]
+    ]
+  ],
+  "palette": [
+    {
+      "id": 0,
+      "name": "Red",
+      "rgb": [
+        255,
+        0,
+        0
+      ]
+    },
+    {
+      "id": 1,
+      "name": "Green",
+      "rgb": [
+        0,
+        255,
+        0
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Blue",
+      "rgb": [
+        0,
+        0,
+        255
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Yellow",
+      "rgb": [
+        255,
+        255,
+        0
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Pink",
+      "rgb": [
+        255,
+        50,
+        130
+      ]
+    },
+    {
+      "id": 5,
+      "name": "Cyan",
+      "rgb": [
+        0,
+        255,
+        255
+      ]
+    },
+    {
+      "id": 6,
+      "name": "White",
+      "rgb": [
+        255,
+        255,
+        255
+      ]
+    },
+    {
+      "id": 7,
+      "name": "Rainbow",
+      "rgb": null
+    }
+  ],
+  "brightness_levels": [
+    0,
+    4,
+    8,
+    12,
+    16,
+    20
+  ],
+  "speed_levels": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ]
+}

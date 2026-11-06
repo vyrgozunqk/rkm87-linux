@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+#
+# Royal Kludge RK M87 - Unified Command & Application Launcher
+#
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PARENT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+
+if [ -n "$RKM87_DIR" ] && [ -d "$RKM87_DIR" ]; then
+    APP_DIR="$RKM87_DIR"
+elif [ -d "$HOME/.RKLinux" ] && [ -x "$HOME/.RKLinux/.venv/bin/python3" ]; then
+    APP_DIR="$HOME/.RKLinux"
+elif [ -f "$PARENT_DIR/main.py" ] && [ -x "$PARENT_DIR/.venv/bin/python3" ]; then
+    APP_DIR="$PARENT_DIR"
+elif [ -d "$HOME/.local/share/rkm87" ] && [ -x "$HOME/.local/share/rkm87/.venv/bin/python3" ]; then
+    APP_DIR="$HOME/.local/share/rkm87"
+else
+    echo "Error: Royal Kludge RK M87 Suite is not installed." >&2
+    echo "Please run install.sh to install." >&2
+    exit 1
+fi
+
+VENV_PYTHON="$APP_DIR/.venv/bin/python3"
+
+# Dispatch CLI subcommands vs GUI Studio
+case "$1" in
+    sync|mode|debounce|sleep|reset|matrix|daemon|music|upload|text|status|--help|-h|--version)
+        exec "$VENV_PYTHON" "$APP_DIR/cli.py" "$@"
+        ;;
+    *)
+        exec "$VENV_PYTHON" "$APP_DIR/main.py" "$@"
+        ;;
+esac
