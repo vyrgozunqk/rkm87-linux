@@ -19,7 +19,7 @@
 ---
 
 > [!WARNING]
-> **Vibe-Coded Project Notice**: This project is **vibe-coded** using AI pair programming. We have tried our best to copy and replicate the functionality of the official Royal Kludge Windows software (`DeviceDriver.exe`) through reverse engineering, but please note there could be bugs or edge cases.
+> **Vibe-Coded Project Notice**: This project is **vibe-coded** using AI pair programming. We have tried our best to copy and replicate the functionality of the official Royal Kludge Windows software  through reverse engineering, but please note there could be bugs or edge cases.
 >
 > ⚠️ **Key Remapping & Macros Untested**: The **Key Remap & Macro Studio** functionality has **NOT been hardware-tested**. Use key remapping at your own discretion. If key mappings ever behave erratically:
 > 1. Try restoring factory defaults via the **"Reset Keyboard Data"** button in the *Keyboard Options* tab.
@@ -49,11 +49,11 @@ Convert images and animated GIFs to big-endian RGB565 (240×135) with frame-by-f
 ### 5. Key Remap & Macro Studio
 Remap physical scancodes, configure multimedia and media control keys, bind mouse clicks, and design multi-step timed macro sequences across 4 hardware matrix layers.
 
-> ⚠️ **Notice**: The key remapping and macro features have **not been hardware-tested** yet and should be considered experimental.
+> ⚠️ **Notice**: The key remapping and macro features have **not been tested** yet and should be considered experimental.
 ![Key Remap Studio](docs/images/tab_keymap.png)
 
 ### 6. Hardware Options & Factory Reset
-Configure ultra-low latency **Gaming Mode (1ms)** vs **Office Mode (4ms)** debounce filters, adjust wireless idle sleep timeouts, manage desktop autostart, and safely restore factory defaults with a single click.
+Configure ultra-low latency **Gaming Mode (1ms)** vs **Office Mode (4ms)** debounce filters, adjust wireless idle sleep timeouts, manage autostart, and safely reset the LED's/ key maps in case of stalling with a single click.
 ![Hardware Options](docs/images/tab_options.png)
 
 ---
@@ -165,7 +165,7 @@ The driver communicates with the SinoWealth microcontroller via Linux HID Raw in
 |---|---|---|---|---|---|---|---|
 | **USB Cable** | `0x01A2` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | **2.4 GHz Dongle** | `0x0150` | ✅ | ✅ | *(Wired Only)* | *(Wired Only)* | ✅ | ✅ |
-| **Bluetooth LE** | - | Handled by OS Bluetooth LE HID stack |
+| **Bluetooth LE** | - | Handled by the hardware |
 
 ---
 
@@ -176,5 +176,5 @@ Distributed under the MIT License. See [LICENSE](LICENSE) for more information.
 ---
 
 <div align="center">
-<sub>Crafted with precision for the Linux mechanical keyboard community.</sub>
+<sub>Crafted for my own needs, but feel free to use it. It may work with other RK keyboards that share the same hardware platform, or be easily modded to work with them, however I don't have the hardware to test it</sub>
 </div>
