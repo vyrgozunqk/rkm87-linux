@@ -28,8 +28,18 @@ def rgb_to_rgb565_be(r: int, g: int, b: int) -> bytes:
     return struct.pack(">H", val)
 
 
-def process_image_frame(img: Image.Image, width: int = protocol.SCREEN_WIDTH, height: int = protocol.SCREEN_HEIGHT) -> bytes:
-    """Fit, center, and convert an Image frame to raw RGB565 bytes (240x135) with black letterboxing."""
+def process_image_frame(
+    img: Image.Image,
+    width: int = protocol.SCREEN_WIDTH,
+    height: int = protocol.SCREEN_HEIGHT,
+    scale_mode: str = "fill",
+) -> bytes:
+    """Process and convert an Image frame to raw RGB565 bytes (240x135).
+    scale_mode:
+      - 'fill': Scale preserving aspect ratio to completely fill the 240x135 screen (center-cropped, matching official software).
+      - 'fit': Scale preserving aspect ratio to fit inside 240x135 with black letterbox borders.
+      - 'stretch': Directly stretch to 240x135 without preserving aspect ratio.
+    """
     if img.mode in ("RGBA", "LA") or (img.mode == "P" and "transparency" in img.info):
         rgba = img.convert("RGBA")
         bg = Image.new("RGBA", rgba.size, (0, 0, 0, 255))
@@ -39,15 +49,26 @@ def process_image_frame(img: Image.Image, width: int = protocol.SCREEN_WIDTH, he
         img = img.convert("RGB")
 
     src_w, src_h = img.size
-    scale = min(width / src_w, height / src_h)
-    new_w = max(1, int(src_w * scale))
-    new_h = max(1, int(src_h * scale))
-    img_resized = img.resize((new_w, new_h), Image.Resampling.LANCZOS)
 
-    final_img = Image.new("RGB", (width, height), (0, 0, 0))
-    left = (width - new_w) // 2
-    top = (height - new_h) // 2
-    final_img.paste(img_resized, (left, top))
+    if scale_mode == "stretch":
+        final_img = img.resize((width, height), Image.Resampling.LANCZOS)
+    elif scale_mode == "fit":
+        scale = min(width / src_w, height / src_h)
+        new_w = max(1, int(round(src_w * scale)))
+        new_h = max(1, int(round(src_h * scale)))
+        img_resized = img.resize((new_w, new_h), Image.Resampling.LANCZOS)
+        final_img = Image.new("RGB", (width, height), (0, 0, 0))
+        left = (width - new_w) // 2
+        top = (height - new_h) // 2
+        final_img.paste(img_resized, (left, top))
+    else:  # default "fill"
+        scale = max(width / src_w, height / src_h)
+        new_w = max(1, int(round(src_w * scale)))
+        new_h = max(1, int(round(src_h * scale)))
+        img_resized = img.resize((new_w, new_h), Image.Resampling.LANCZOS)
+        left = (new_w - width) // 2
+        top = (new_h - height) // 2
+        final_img = img_resized.crop((left, top, left + width, top + height))
 
     if HAS_NUMPY:
         arr = np.asarray(final_img, dtype=np.uint16)
@@ -66,7 +87,11 @@ def process_image_frame(img: Image.Image, width: int = protocol.SCREEN_WIDTH, he
     return bytes(raw_bytes)
 
 
-def load_gif_or_image(file_path: str, max_frames: int = protocol.SCREEN_MAX_FRAMES) -> Tuple[List[bytes], int]:
+def load_gif_or_image(
+    file_path: str,
+    max_frames: int = protocol.SCREEN_MAX_FRAMES,
+    scale_mode: str = "fill",
+) -> Tuple[List[bytes], int]:
     """Load an image or animated GIF file.
     Returns: (list_of_rgb565_frames, average_delay_ms)
     """
@@ -75,7 +100,7 @@ def load_gif_or_image(file_path: str, max_frames: int = protocol.SCREEN_MAX_FRAM
     delays: List[int] = []
 
     for frame in ImageSequence.Iterator(img):
-        raw_frame = process_image_frame(frame)
+        raw_frame = process_image_frame(frame, scale_mode=scale_mode)
         frames.append(raw_frame)
         d = frame.info.get("duration", 100)
         delays.append(d if d > 0 else 100)
@@ -147,11 +172,13 @@ class ScreenUploader:
         file_path: str,
         progress_callback: Optional[Callable[[int, int, str], None]] = None,
         cancel_check: Optional[Callable[[], bool]] = None,
+        scale_mode: str = "fill",
     ) -> bool:
         """Upload a GIF or image to the keyboard screen over USB cable.
         Flow control waits for hardware MCU flash-write ACKs on every 512-byte chunk.
         progress_callback: fn(current_step, total_steps, status_text)
         cancel_check: optional fn() -> bool, if returns True transfer aborts cleanly
+        scale_mode: 'fill' (crop to fill screen), 'fit' (letterbox), or 'stretch'
         """
         if self.dev.is_dongle:
             raise RuntimeError("Screen image/GIF uploads are only supported over USB Cable.")
@@ -161,7 +188,7 @@ class ScreenUploader:
         if not os.path.exists(file_path):
             raise FileNotFoundError(f"File not found: {file_path}")
 
-        frames, delay_ms = load_gif_or_image(file_path)
+        frames, delay_ms = load_gif_or_image(file_path, scale_mode=scale_mode)
         if not frames:
             raise ValueError("No valid image frames found in file.")
         if len(frames) > protocol.SCREEN_MAX_FRAMES:

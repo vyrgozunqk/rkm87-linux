@@ -7,6 +7,7 @@ from PIL import Image, ImageSequence
 from PySide6.QtCore import Qt, QTimer, QThread, Signal
 from PySide6.QtGui import QImage, QPixmap
 from PySide6.QtWidgets import (
+    QComboBox,
     QFileDialog,
     QGroupBox,
     QHBoxLayout,
@@ -26,10 +27,11 @@ class UploadWorker(QThread):
     progress = Signal(int, int, str)
     finished = Signal(bool, str)
 
-    def __init__(self, dev: RKDevice, file_path: str):
+    def __init__(self, dev: RKDevice, file_path: str, scale_mode: str = "fill"):
         super().__init__()
         self.dev = dev
         self.file_path = file_path
+        self.scale_mode = scale_mode
         self._is_cancelled = False
         self.uploader = ScreenUploader(self.dev)
 
@@ -41,7 +43,8 @@ class UploadWorker(QThread):
             ok = self.uploader.upload_gif(
                 self.file_path,
                 progress_callback=lambda cur, tot, txt: self.progress.emit(cur, tot, txt),
-                cancel_check=lambda: self._is_cancelled
+                cancel_check=lambda: self._is_cancelled,
+                scale_mode=self.scale_mode,
             )
             if self._is_cancelled:
                 self.finished.emit(False, "Upload cancelled by user (hardware display state reset).")
@@ -115,6 +118,40 @@ class ScreenTab(QWidget):
         ctrl_layout.addWidget(self.btn_cancel)
         box_layout.addLayout(ctrl_layout)
 
+        # Scaling Mode selector row
+        scale_layout = QHBoxLayout()
+        lbl_scale = QLabel("Screen Scaling:")
+        lbl_scale.setStyleSheet("color: #e4e4e7; font-size: 12px; font-weight: bold;")
+        self.combo_scale = QComboBox()
+        self.combo_scale.addItem("Fill Screen (Crop to Fit — Recommended)", "fill")
+        self.combo_scale.addItem("Fit Entire Image (Black letterbox borders)", "fit")
+        self.combo_scale.addItem("Stretch to Fill (Distort to 240×135)", "stretch")
+        self.combo_scale.setStyleSheet("""
+            QComboBox {
+                background-color: #27272a;
+                color: #ffffff;
+                border: 1px solid #3f3f46;
+                border-radius: 6px;
+                padding: 6px 12px;
+                font-size: 12px;
+                min-width: 270px;
+            }
+            QComboBox:hover {
+                border-color: #3b82f6;
+            }
+            QComboBox QAbstractItemView {
+                background-color: #18181b;
+                color: #ffffff;
+                selection-background-color: #3b82f6;
+                selection-color: #ffffff;
+            }
+        """)
+        self.combo_scale.currentIndexChanged.connect(self._on_scale_mode_changed)
+        scale_layout.addWidget(lbl_scale)
+        scale_layout.addWidget(self.combo_scale)
+        scale_layout.addStretch(1)
+        box_layout.addLayout(scale_layout)
+
         # Progress bar
         self.progress_bar = QProgressBar()
         self.progress_bar.setVisible(False)
@@ -154,10 +191,21 @@ class ScreenTab(QWidget):
         path, _ = QFileDialog.getOpenFileName(self, "Open Image or GIF", "", "Images (*.gif *.png *.jpg *.jpeg *.bmp *.webp)")
         if not path:
             return
-
         self.current_file = path
+        self._load_preview()
+
+    def _on_scale_mode_changed(self):
+        if self.current_file:
+            self._load_preview()
+
+    def _load_preview(self):
+        if not self.current_file:
+            return
+
+        path = self.current_file
         self.anim_timer.stop()
         self.preview_frames.clear()
+        scale_mode = self.combo_scale.currentData() if hasattr(self, "combo_scale") else "fill"
 
         try:
             img = Image.open(path)
@@ -172,18 +220,26 @@ class ScreenTab(QWidget):
                 else:
                     f = frame.convert("RGB")
 
-                # Fit and center on 240x135 black canvas
                 w, h = f.size
-                scale = min(240 / w, 135 / h)
-                nw, nh = max(1, int(w * scale)), max(1, int(h * scale))
-                f_resized = f.resize((nw, nh), Image.Resampling.LANCZOS)
-                canvas = Image.new("RGB", (240, 135), (0, 0, 0))
-                left = (240 - nw) // 2
-                top = (135 - nh) // 2
-                canvas.paste(f_resized, (left, top))
+                if scale_mode == "stretch":
+                    final_img = f.resize((240, 135), Image.Resampling.LANCZOS)
+                elif scale_mode == "fit":
+                    scale = min(240 / w, 135 / h)
+                    nw, nh = max(1, int(round(w * scale))), max(1, int(round(h * scale)))
+                    f_resized = f.resize((nw, nh), Image.Resampling.LANCZOS)
+                    final_img = Image.new("RGB", (240, 135), (0, 0, 0))
+                    left = (240 - nw) // 2
+                    top = (135 - nh) // 2
+                    final_img.paste(f_resized, (left, top))
+                else:  # default "fill"
+                    scale = max(240 / w, 135 / h)
+                    nw, nh = max(1, int(round(w * scale))), max(1, int(round(h * scale)))
+                    f_resized = f.resize((nw, nh), Image.Resampling.LANCZOS)
+                    left = (nw - 240) // 2
+                    top = (nh - 135) // 2
+                    final_img = f_resized.crop((left, top, left + 240, top + 135))
 
-                # Convert PIL to QPixmap
-                data = canvas.tobytes("raw", "RGB")
+                data = final_img.tobytes("raw", "RGB")
                 qimg = QImage(data, 240, 135, 240 * 3, QImage.Format_RGB888)
                 self.preview_frames.append(QPixmap.fromImage(qimg).scaled(360, 202, Qt.KeepAspectRatio, Qt.SmoothTransformation))
 
@@ -217,7 +273,10 @@ class ScreenTab(QWidget):
         if not self.current_file or self.dev.is_dongle:
             return
 
+        scale_mode = self.combo_scale.currentData() if hasattr(self, "combo_scale") else "fill"
+
         self.btn_browse.setEnabled(False)
+        self.combo_scale.setEnabled(False)
         self.btn_upload.setVisible(False)
         self.btn_cancel.setVisible(True)
         self.btn_cancel.setEnabled(True)
@@ -227,7 +286,7 @@ class ScreenTab(QWidget):
 
         self.upload_started.emit()
 
-        self.worker = UploadWorker(self.dev, self.current_file)
+        self.worker = UploadWorker(self.dev, self.current_file, scale_mode=scale_mode)
         self.worker.progress.connect(self._on_progress)
         self.worker.finished.connect(self._on_finished)
         self.worker.start()
@@ -245,6 +304,7 @@ class ScreenTab(QWidget):
 
     def _on_finished(self, success, message):
         self.btn_browse.setEnabled(True)
+        self.combo_scale.setEnabled(True)
         self.btn_cancel.setVisible(False)
         self.btn_upload.setVisible(True)
         if not self.dev.is_dongle:
