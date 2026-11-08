@@ -102,6 +102,7 @@ class ScreenTab(QWidget):
         self.btn_upload = QPushButton("Upload to Screen")
         self.btn_upload.setEnabled(False)
         self.btn_upload.setStyleSheet("QPushButton { background-color: #10b981; color: white; font-weight: bold; padding: 8px 16px; border-radius: 6px; } QPushButton:hover { background-color: #059669; } QPushButton:disabled { background-color: #27272a; color: #71717a; }")
+        self.btn_upload.clicked.connect(self._on_upload)
         self.btn_cancel = QPushButton("Cancel")
         self.btn_cancel.setVisible(False)
         self.btn_cancel.setStyleSheet("QPushButton { background-color: #ef4444; color: white; font-weight: bold; padding: 8px 16px; border-radius: 6px; } QPushButton:hover { background-color: #dc2626; }")
@@ -132,6 +133,9 @@ class ScreenTab(QWidget):
         layout.addWidget(self.lbl_notice)
 
         layout.addStretch(1)
+
+    def is_uploading(self) -> bool:
+        return self.worker is not None and self.worker.isRunning()
 
     def update_connection_mode(self, is_dongle: bool):
         if is_dongle:

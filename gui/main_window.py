@@ -185,6 +185,9 @@ class MainWindow(QMainWindow):
         """Poll keyboard hardware to reflect manual on-device RGB changes in the UI."""
         if hasattr(self, "music_tab") and self.music_tab.is_active:
             return
+        # Don't touch the device while a GIF upload is streaming from the worker thread
+        if hasattr(self, "screen_tab") and self.screen_tab.is_uploading():
+            return
 
         # Check for hotplug changes (switching between USB cable and 2.4GHz dongle)
         old_dongle = self.dev.is_dongle
