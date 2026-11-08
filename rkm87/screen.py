@@ -134,6 +134,11 @@ class ScreenUploader:
                 _wait_ack(self.dev.fd, timeout=1.0)
             except TimeoutError:
                 pass
+            time.sleep(0.05)
+            try:
+                self.dev.sync_time_and_volume(50)
+            except Exception:
+                pass
         except OSError:
             pass
 

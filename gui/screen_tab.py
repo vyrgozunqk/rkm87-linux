@@ -35,7 +35,6 @@ class UploadWorker(QThread):
 
     def cancel(self):
         self._is_cancelled = True
-        self.uploader.abort()
 
     def run(self):
         try:
