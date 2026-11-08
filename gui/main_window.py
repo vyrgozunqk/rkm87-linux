@@ -296,6 +296,8 @@ class MainWindow(QMainWindow):
         self.btn_quick_sync.setEnabled(True)
         self.canvas.setEnabled(True)
         self._update_status_indicator()
+        if not success:
+            self._on_quick_sync()
 
     def _on_quick_sync(self):
         if hasattr(self, "screen_tab") and self.screen_tab.is_uploading():

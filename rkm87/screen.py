@@ -161,7 +161,12 @@ class ScreenUploader:
                 pass
             time.sleep(0.05)
             try:
-                self.dev.sync_time_and_volume(50)
+                from .audio import get_current_volume
+                vol = get_current_volume()
+            except Exception:
+                vol = 50
+            try:
+                self.dev.sync_time_and_volume(vol)
             except Exception:
                 pass
         except OSError:
