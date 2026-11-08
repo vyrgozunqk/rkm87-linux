@@ -82,46 +82,59 @@ class ScreenTab(QWidget):
         # Upload & Preview Box
         preview_box = QGroupBox("Screen Display (240 × 135 pixels)")
         preview_box.setStyleSheet("QGroupBox { font-weight: bold; color: #e4e4e7; border: 1px solid #3f3f46; border-radius: 6px; margin-top: 10px; padding: 15px; } QGroupBox::title { subcontrol-origin: margin; left: 10px; padding: 0 5px; }")
-        box_layout = QVBoxLayout(preview_box)
-        box_layout.setAlignment(Qt.AlignCenter)
 
-        # LCD Preview screen
+        # Horizontal side-by-side content: Left = Screen Preview, Right = Controls
+        content_layout = QHBoxLayout()
+        content_layout.setSpacing(28)
+        content_layout.setContentsMargins(10, 10, 10, 10)
+
+        # Left Column: Preview Screen & Info
+        left_col = QVBoxLayout()
+        left_col.setSpacing(6)
+        left_col.setAlignment(Qt.AlignCenter)
+
         self.lbl_screen = QLabel()
-        self.lbl_screen.setFixedSize(240 * 1.5, 135 * 1.5)  # 360x202 preview
-        self.lbl_screen.setStyleSheet("background-color: #000000; border: 3px solid #27272a; border-radius: 8px; color: #71717a; font-size: 13px;")
+        self.lbl_screen.setFixedSize(320, 180)  # Clean 16:9 preview matching 240x135
+        self.lbl_screen.setStyleSheet("background-color: #000000; border: 2px solid #3f3f46; border-radius: 8px; color: #71717a; font-size: 13px;")
         self.lbl_screen.setAlignment(Qt.AlignCenter)
-        self.lbl_screen.setText("No Image or GIF Selected\nClick 'Choose File' below")
-        box_layout.addWidget(self.lbl_screen)
+        self.lbl_screen.setText("No Image or GIF Selected\nClick 'Choose Image / GIF' on the right")
+        left_col.addWidget(self.lbl_screen)
 
         self.lbl_info = QLabel("Resolution: 240×135 | Frames: 0")
-        self.lbl_info.setStyleSheet("color: #a1a1aa; font-size: 12px; margin-top: 6px;")
+        self.lbl_info.setStyleSheet("color: #a1a1aa; font-size: 11px;")
         self.lbl_info.setAlignment(Qt.AlignCenter)
-        box_layout.addWidget(self.lbl_info)
+        left_col.addWidget(self.lbl_info)
+        content_layout.addLayout(left_col)
 
-        # Controls
-        ctrl_layout = QHBoxLayout()
-        self.btn_browse = QPushButton("Choose Image / GIF...")
-        self.btn_browse.setStyleSheet("QPushButton { background-color: #3b82f6; color: white; font-weight: bold; padding: 8px 16px; border-radius: 6px; } QPushButton:hover { background-color: #2563eb; }")
+        # Right Column: Controls, Scale Mode, Upload, Progress & Status
+        right_col = QVBoxLayout()
+        right_col.setSpacing(12)
+        right_col.setAlignment(Qt.AlignVCenter)
+
+        # File browse button
+        self.btn_browse = QPushButton("📁  Choose Image / Animated GIF...")
+        self.btn_browse.setStyleSheet("""
+            QPushButton {
+                background-color: #2563eb;
+                color: #ffffff;
+                font-weight: bold;
+                padding: 10px 18px;
+                border-radius: 6px;
+                font-size: 13px;
+                border: 1px solid #3b82f6;
+            }
+            QPushButton:hover {
+                background-color: #1d4ed8;
+            }
+        """)
         self.btn_browse.clicked.connect(self._on_browse)
+        right_col.addWidget(self.btn_browse)
 
-        self.btn_upload = QPushButton("Upload to Screen")
-        self.btn_upload.setEnabled(False)
-        self.btn_upload.setStyleSheet("QPushButton { background-color: #10b981; color: white; font-weight: bold; padding: 8px 16px; border-radius: 6px; } QPushButton:hover { background-color: #059669; } QPushButton:disabled { background-color: #27272a; color: #71717a; }")
-        self.btn_upload.clicked.connect(self._on_upload)
-        self.btn_cancel = QPushButton("Cancel")
-        self.btn_cancel.setVisible(False)
-        self.btn_cancel.setStyleSheet("QPushButton { background-color: #ef4444; color: white; font-weight: bold; padding: 8px 16px; border-radius: 6px; } QPushButton:hover { background-color: #dc2626; }")
-        self.btn_cancel.clicked.connect(self._on_cancel)
-
-        ctrl_layout.addWidget(self.btn_browse)
-        ctrl_layout.addWidget(self.btn_upload)
-        ctrl_layout.addWidget(self.btn_cancel)
-        box_layout.addLayout(ctrl_layout)
-
-        # Scaling Mode selector row
-        scale_layout = QHBoxLayout()
-        lbl_scale = QLabel("Screen Scaling:")
-        lbl_scale.setStyleSheet("color: #e4e4e7; font-size: 12px; font-weight: bold;")
+        # Scaling Mode row
+        scale_box = QVBoxLayout()
+        scale_box.setSpacing(4)
+        lbl_scale = QLabel("DISPLAY SCALING:")
+        lbl_scale.setStyleSheet("color: #a1a1aa; font-size: 11px; font-weight: bold; letter-spacing: 0.5px;")
         self.combo_scale = QComboBox()
         self.combo_scale.addItem("Fill Screen (Crop to Fit — Recommended)", "fill")
         self.combo_scale.addItem("Fit Entire Image (Black letterbox borders)", "fit")
@@ -132,9 +145,8 @@ class ScreenTab(QWidget):
                 color: #ffffff;
                 border: 1px solid #3f3f46;
                 border-radius: 6px;
-                padding: 6px 12px;
+                padding: 8px 12px;
                 font-size: 12px;
-                min-width: 270px;
             }
             QComboBox:hover {
                 border-color: #3b82f6;
@@ -142,26 +154,88 @@ class ScreenTab(QWidget):
             QComboBox QAbstractItemView {
                 background-color: #18181b;
                 color: #ffffff;
-                selection-background-color: #3b82f6;
+                selection-background-color: #2563eb;
                 selection-color: #ffffff;
+                border: 1px solid #3f3f46;
             }
         """)
         self.combo_scale.currentIndexChanged.connect(self._on_scale_mode_changed)
-        scale_layout.addWidget(lbl_scale)
-        scale_layout.addWidget(self.combo_scale)
-        scale_layout.addStretch(1)
-        box_layout.addLayout(scale_layout)
+        scale_box.addWidget(lbl_scale)
+        scale_box.addWidget(self.combo_scale)
+        right_col.addLayout(scale_box)
+
+        # Action Buttons (Upload / Cancel)
+        self.btn_upload = QPushButton("🚀  Upload to Keyboard Screen")
+        self.btn_upload.setEnabled(False)
+        self.btn_upload.setStyleSheet("""
+            QPushButton {
+                background-color: #10b981;
+                color: #ffffff;
+                font-weight: bold;
+                padding: 10px 18px;
+                border-radius: 6px;
+                font-size: 13px;
+            }
+            QPushButton:hover {
+                background-color: #059669;
+            }
+            QPushButton:disabled {
+                background-color: #27272a;
+                color: #52525b;
+                border: 1px solid #3f3f46;
+            }
+        """)
+        self.btn_upload.clicked.connect(self._on_upload)
+
+        self.btn_cancel = QPushButton("⏹️  Cancel Upload")
+        self.btn_cancel.setVisible(False)
+        self.btn_cancel.setStyleSheet("""
+            QPushButton {
+                background-color: #ef4444;
+                color: #ffffff;
+                font-weight: bold;
+                padding: 10px 18px;
+                border-radius: 6px;
+                font-size: 13px;
+            }
+            QPushButton:hover {
+                background-color: #dc2626;
+            }
+        """)
+        self.btn_cancel.clicked.connect(self._on_cancel)
+
+        right_col.addWidget(self.btn_upload)
+        right_col.addWidget(self.btn_cancel)
 
         # Progress bar
         self.progress_bar = QProgressBar()
         self.progress_bar.setVisible(False)
-        self.progress_bar.setStyleSheet("QProgressBar { background: #27272a; border-radius: 4px; height: 12px; text-align: center; color: white; font-size: 11px; } QProgressBar::chunk { background: #10b981; border-radius: 4px; }")
-        box_layout.addWidget(self.progress_bar)
+        self.progress_bar.setStyleSheet("""
+            QProgressBar {
+                background: #27272a;
+                border-radius: 4px;
+                height: 14px;
+                text-align: center;
+                color: white;
+                font-size: 11px;
+                font-weight: bold;
+            }
+            QProgressBar::chunk {
+                background: #10b981;
+                border-radius: 4px;
+            }
+        """)
+        right_col.addWidget(self.progress_bar)
 
         self.lbl_status = QLabel("")
         self.lbl_status.setAlignment(Qt.AlignCenter)
         self.lbl_status.setStyleSheet("color: #e4e4e7; font-size: 12px;")
-        box_layout.addWidget(self.lbl_status)
+        right_col.addWidget(self.lbl_status)
+
+        content_layout.addLayout(right_col, stretch=1)
+
+        preview_box_layout = QVBoxLayout(preview_box)
+        preview_box_layout.addLayout(content_layout)
 
         layout.addWidget(preview_box)
 
@@ -241,7 +315,7 @@ class ScreenTab(QWidget):
 
                 data = final_img.tobytes("raw", "RGB")
                 qimg = QImage(data, 240, 135, 240 * 3, QImage.Format_RGB888)
-                self.preview_frames.append(QPixmap.fromImage(qimg).scaled(360, 202, Qt.KeepAspectRatio, Qt.SmoothTransformation))
+                self.preview_frames.append(QPixmap.fromImage(qimg).scaled(320, 180, Qt.KeepAspectRatio, Qt.SmoothTransformation))
 
                 d = frame.info.get("duration", 100)
                 delays.append(d if d > 0 else 100)
