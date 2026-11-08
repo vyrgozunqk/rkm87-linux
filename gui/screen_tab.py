@@ -55,6 +55,9 @@ class UploadWorker(QThread):
 
 
 class ScreenTab(QWidget):
+    upload_started = Signal()
+    upload_finished = Signal(bool, str)
+
     def __init__(self, dev: RKDevice, parent=None):
         super().__init__(parent)
         self.dev = dev
@@ -223,6 +226,8 @@ class ScreenTab(QWidget):
         self.progress_bar.setValue(0)
         self.lbl_status.setText("Preparing upload...")
 
+        self.upload_started.emit()
+
         self.worker = UploadWorker(self.dev, self.current_file)
         self.worker.progress.connect(self._on_progress)
         self.worker.finished.connect(self._on_finished)
@@ -246,3 +251,4 @@ class ScreenTab(QWidget):
         if not self.dev.is_dongle:
             self.btn_upload.setEnabled(True)
         self.lbl_status.setText(f"✓ {message}" if success else f"⚠️ {message}")
+        self.upload_finished.emit(success, message)
