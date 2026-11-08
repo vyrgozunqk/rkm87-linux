@@ -44,7 +44,7 @@ Real-time 11-column audio frequency spectrum light show streaming directly to th
 
 ### 4. TFT LCD Screen GIF & Image Uploader
 Convert images and animated GIFs to big-endian RGB565 (240×135) with frame-by-frame dithering, 64-byte chunked streaming, and CRC safety checks directly to onboard flash storage *(Wired USB mode)*.
-![LCD Screen Studio](docs/images/tab_lcd_screen.png)
+![LCD Screen Studio](docs/images/tab_screen_uploader.png)
 
 ### 5. Key Remap & Macro Studio
 Remap physical scancodes, configure multimedia and media control keys, bind mouse clicks, and design multi-step timed macro sequences across 4 hardware matrix layers.
