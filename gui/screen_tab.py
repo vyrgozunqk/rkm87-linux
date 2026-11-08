@@ -161,18 +161,27 @@ class ScreenTab(QWidget):
             img = Image.open(path)
             delays = []
             for frame in ImageSequence.Iterator(img):
-                f = frame.convert("RGB")
-                # Crop/resize to 240x135
+                # Composite transparent pixels over black
+                if frame.mode in ("RGBA", "LA") or (frame.mode == "P" and "transparency" in frame.info):
+                    rgba = frame.convert("RGBA")
+                    bg = Image.new("RGBA", rgba.size, (0, 0, 0, 255))
+                    bg.alpha_composite(rgba)
+                    f = bg.convert("RGB")
+                else:
+                    f = frame.convert("RGB")
+
+                # Fit and center on 240x135 black canvas
                 w, h = f.size
-                scale = max(240 / w, 135 / h)
-                nw, nh = int(w * scale), int(h * scale)
+                scale = min(240 / w, 135 / h)
+                nw, nh = max(1, int(w * scale)), max(1, int(h * scale))
                 f_resized = f.resize((nw, nh), Image.Resampling.LANCZOS)
-                left = (nw - 240) // 2
-                top = (nh - 135) // 2
-                f_cropped = f_resized.crop((left, top, left + 240, top + 135))
+                canvas = Image.new("RGB", (240, 135), (0, 0, 0))
+                left = (240 - nw) // 2
+                top = (135 - nh) // 2
+                canvas.paste(f_resized, (left, top))
 
                 # Convert PIL to QPixmap
-                data = f_cropped.tobytes("raw", "RGB")
+                data = canvas.tobytes("raw", "RGB")
                 qimg = QImage(data, 240, 135, 240 * 3, QImage.Format_RGB888)
                 self.preview_frames.append(QPixmap.fromImage(qimg).scaled(360, 202, Qt.KeepAspectRatio, Qt.SmoothTransformation))
 

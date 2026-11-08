@@ -140,16 +140,29 @@ def build_gif_param_payload(mode: int, frame_count: int, delay_ms: int) -> bytes
     return bytes(payload)
 
 
-def build_page_chunk_payload(frame_index: int, page_index: int, chunk_data: bytes) -> bytes:
-    """Build the header + payload for AccessData_Page (cmdId 0x0C).
-    Format:
-    [0] board=0
-    [1] frameIdx
-    [2] pageIdx
-    [3] CRC: (-1 - sum(chunk_data)) & 0xFF
-    [4..5] dataLen LE
-    [6..] chunk_data
+def build_screen_page_chunk(frame_index: int, chunk_index: int, chunk_data: bytes) -> bytearray:
+    """Build a 520-byte wired AccessData_Page feature report (cmdId 0x0C).
+    Format captured directly from official hardware communication:
+    [0] report_id = 0x09
+    [1] cmd = 0x0C
+    [2] reserved = 0x00
+    [3] frame_index (0..N-1)
+    [4] chunk_index (0..126)
+    [5] checksum = (~sum(chunk_data)) & 0xFF
+    [6..7] data_len uint16 LE (0x0200 for 512, 0x0120 for 288)
+    [8..8+len] chunk_data
+    [8+len..520] zero padding
     """
-    crc_val = (-1 - sum(chunk_data)) & 0xFF
-    hdr = struct.pack("<BBBBH", 0, frame_index, page_index, crc_val, len(chunk_data))
-    return hdr + chunk_data
+    buf = bytearray(REPORT_SIZE_WIRED)
+    buf[0] = REPORT_ID_WIRED
+    buf[1] = CMD_WIRED_ACCESS_DATA_PAGE
+    buf[2] = 0x00
+    buf[3] = frame_index & 0xFF
+    buf[4] = chunk_index & 0xFF
+    buf[5] = (~sum(chunk_data)) & 0xFF
+    data_len = len(chunk_data)
+    buf[6] = data_len & 0xFF
+    buf[7] = (data_len >> 8) & 0xFF
+    buf[8:8 + data_len] = chunk_data
+    return buf
+
