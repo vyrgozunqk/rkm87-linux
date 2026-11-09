@@ -79,11 +79,12 @@ class MusicTab(QWidget):
     visualizer_toggled = Signal(bool)
     frame_received = Signal(dict, list)
 
-    def __init__(self, dev, canvas: KeyboardCanvas, parent=None):
+    def __init__(self, dev, canvas: KeyboardCanvas, lighting_mgr=None, parent=None):
         super().__init__(parent)
         self.dev = dev
         self.canvas = canvas
-        self.controller = MusicVisualizerController(self.dev, gui_callback=self._on_gui_frame)
+        self.lighting_mgr = lighting_mgr
+        self.controller = MusicVisualizerController(self.dev, lighting=self.lighting_mgr, gui_callback=self._on_gui_frame)
         self.is_active = False
         self.frame_received.connect(self._handle_frame_gui)
         self._init_ui()

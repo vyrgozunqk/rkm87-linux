@@ -21,7 +21,9 @@ scratch/
 
 # IDE and OS files
 .DS_Store
-.idea/
 .vscode/
 *.swp
 *~
+
+# Agent and assistant rules
+AGENTS.md

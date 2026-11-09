@@ -71,6 +71,11 @@ class MainWindow(QMainWindow):
         self.keymap_mgr = KeyMappingManager(self.dev)
 
         self.last_hardware_config: Optional[LightingConfig] = None
+        self.prior_preset_config: Optional[LightingConfig] = None
+        self.active_lighting_mode_type: str = "preset"  # "preset" or "custom"
+        self.last_custom_colors: Dict[str, Tuple[int, int, int]] = {}
+        self.last_custom_brightness: int = 20
+        self.last_preset_custom_rgb: Optional[Tuple[int, int, int]] = None
 
         self._init_ui()
 
@@ -119,8 +124,10 @@ class MainWindow(QMainWindow):
 
         self.custom_tab = CustomLightingTab(self.lighting_mgr, self.canvas)
         self.custom_tab.custom_applied.connect(self._on_custom_lighting_applied)
+        self.last_custom_colors = dict(self.custom_tab.key_colors)
 
-        self.music_tab = MusicTab(self.dev, self.canvas)
+        self.music_tab = MusicTab(self.dev, self.canvas, lighting_mgr=self.lighting_mgr)
+        self.music_tab.visualizer_toggled.connect(self._on_visualizer_toggled)
         self.keymap_tab = KeymapTab(self.keymap_mgr)
         self.screen_tab = ScreenTab(self.dev)
         self.screen_tab.upload_started.connect(self._on_screen_upload_started)
@@ -224,7 +231,11 @@ class MainWindow(QMainWindow):
             # Mode 18/19 is Gaoshou custom lighting, not a standard studio effect
             if cfg.effect in (18, 19):
                 return
-            self.last_hardware_config = cfg
+            if self.prior_preset_config is None and 1 <= cfg.effect <= 17:
+                self.prior_preset_config = cfg
+            if self.active_lighting_mode_type == "preset":
+                self.last_hardware_config = cfg
+                self.prior_preset_config = cfg
             self.lighting_tab.update_from_hardware(cfg)
             if hasattr(self, "options_tab"):
                 self.options_tab.update_from_hardware(cfg)
@@ -259,7 +270,10 @@ class MainWindow(QMainWindow):
 
     def _on_user_lighting_change(self, cfg: LightingConfig, custom_rgb: Optional[tuple] = None):
         """Called when user changes lighting controls in GUI."""
+        self.active_lighting_mode_type = "preset"
         self.last_hardware_config = cfg
+        self.prior_preset_config = cfg
+        self.last_preset_custom_rgb = custom_rgb
         self.lighting_mgr.set_lighting(cfg, custom_rgb=custom_rgb)
         if custom_rgb:
             palette_color = list(custom_rgb)
@@ -274,8 +288,31 @@ class MainWindow(QMainWindow):
         self.canvas.set_lighting_state(cfg.effect, palette_color, is_rainbow)
 
     def _on_custom_lighting_applied(self, key_colors: dict, brightness: int):
+        self.active_lighting_mode_type = "custom"
+        self.last_custom_colors = dict(key_colors)
+        self.last_custom_brightness = brightness
         self.status_text.setText(f"✓ Custom per-key lighting applied ({len(key_colors)} keys configured)")
         self.tray.refresh_menu()
+
+    def _on_visualizer_toggled(self, is_active: bool):
+        if not is_active:
+            self.restore_active_lighting()
+
+    def restore_active_lighting(self):
+        """Restore active lighting (preset or custom per-key) to both keyboard and canvas."""
+        if self.active_lighting_mode_type == "custom" and self.last_custom_colors:
+            self.lighting_mgr.set_custom_matrix_lighting(self.last_custom_colors, brightness=self.last_custom_brightness)
+            self.canvas.set_custom_colors(self.last_custom_colors)
+            self.canvas.set_custom_mode(True)
+            self.canvas.set_music_mode(False)
+        else:
+            cfg = self.last_hardware_config or self.prior_preset_config or LightingConfig(effect=1, brightness=20, speed=2, palette_index=7)
+            self.lighting_mgr.set_lighting(cfg, custom_rgb=self.last_preset_custom_rgb)
+            self.lighting_tab.update_from_hardware(cfg)
+            self.canvas.set_custom_mode(False)
+            self.canvas.set_music_mode(False)
+            self._update_canvas_from_config(cfg)
+        self.canvas.update()
 
     def _on_canvas_key_clicked(self, key_id: str):
         """When a key is clicked on the visual 2D canvas, select it in the active editing tab."""
@@ -339,6 +376,9 @@ class MainWindow(QMainWindow):
             self.lighting_mgr.set_custom_matrix_lighting(keys_map, brightness=20)
             self.canvas.set_custom_colors(keys_map)
             self.canvas.set_custom_mode(True)
+            self.active_lighting_mode_type = "custom"
+            self.last_custom_colors = keys_map
+            self.last_custom_brightness = 20
             self.status_text.setText(f"✓ Tray: Applied custom profile '{prof.get('name', profile_name)}'")
 
     def _on_tray_preset_selected(self, effect_id: int, brightness: int, palette_id: int):
@@ -354,6 +394,10 @@ class MainWindow(QMainWindow):
         self.lighting_mgr.set_lighting(cfg)
         self.lighting_tab.update_from_hardware(cfg)
         self._update_canvas_from_config(cfg)
+        self.active_lighting_mode_type = "preset"
+        self.last_hardware_config = cfg
+        self.prior_preset_config = cfg
+        self.last_preset_custom_rgb = None
         name = "Off" if effect_id == 0 else self.lighting_mgr.get_mode_name(effect_id)
         self.status_text.setText(f"✓ Tray: Set lighting to {name}")
 
@@ -370,6 +414,19 @@ class MainWindow(QMainWindow):
         self.music_tab.btn_toggle.setChecked(enabled)
         self.music_tab._toggle_visualizer(enabled)
 
+    def _restore_lighting_on_shutdown(self):
+        """Restore persistent hardware preset if user was in transient custom/music mode."""
+        try:
+            if hasattr(self, "music_tab") and self.music_tab.controller and self.music_tab.controller._running:
+                self.music_tab.controller.stop()
+
+            # If user enabled custom game mode or music visualizer, restore prior persistent preset
+            if self.active_lighting_mode_type == "custom" or (hasattr(self, "music_tab") and self.music_tab.is_active):
+                preset_cfg = self.prior_preset_config or LightingConfig(effect=1, brightness=20, speed=2, palette_index=7)
+                self.lighting_mgr.set_lighting(preset_cfg)
+        except Exception:
+            pass
+
     def _on_tray_exit(self):
         if hasattr(self, "screen_tab") and self.screen_tab.is_uploading():
             reply = QMessageBox.question(
@@ -385,8 +442,7 @@ class MainWindow(QMainWindow):
             self.screen_tab._on_cancel()
 
         self.poll_timer.stop()
-        if hasattr(self, "music_tab") and self.music_tab.controller:
-            self.music_tab.controller.stop()
+        self._restore_lighting_on_shutdown()
         self.dev.close()
         self.tray.hide()
         QApplication.quit()
@@ -414,7 +470,6 @@ class MainWindow(QMainWindow):
             )
         else:
             self.poll_timer.stop()
-            if hasattr(self, "music_tab") and self.music_tab.controller:
-                self.music_tab.controller.stop()
+            self._restore_lighting_on_shutdown()
             self.dev.close()
             event.accept()

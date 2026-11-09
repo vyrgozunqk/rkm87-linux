@@ -189,9 +189,9 @@ class AudioSpectrumStreamer:
 class MusicVisualizerController:
     """Orchestrates audio FFT streaming, visualizer style shaders, and hardware transmission."""
 
-    def __init__(self, dev, gui_callback: Optional[Callable[[Dict[str, tuple]], None]] = None):
+    def __init__(self, dev, lighting: Optional[LightingManager] = None, gui_callback: Optional[Callable[[Dict[str, tuple]], None]] = None):
         self.dev = dev
-        self.lighting = LightingManager(dev) if dev else None
+        self.lighting = lighting if lighting is not None else (LightingManager(dev) if dev else None)
         self.gui_callback = gui_callback
         self.style_id = 1
         self.custom_color = (0, 255, 230)
@@ -201,6 +201,9 @@ class MusicVisualizerController:
         self._lock = threading.Lock()
         self.animation_phase = 0.0
         self._saved_lighting: Optional[LightingConfig] = None
+        self._saved_mode_type: str = "preset"
+        self._saved_custom_colors: Dict[str, Tuple[int, int, int]] = {}
+        self._saved_custom_brightness: int = 20
         self._last_hw_send = 0.0
 
         # Precompute all keys defined in EQUALIZER_BANDS
@@ -237,25 +240,11 @@ class MusicVisualizerController:
 
         if self.lighting:
             try:
+                self._saved_mode_type = getattr(self.lighting, "last_mode_type", "preset")
+                self._saved_custom_colors = dict(getattr(self.lighting, "last_custom_key_colors", {}))
+                self._saved_custom_brightness = getattr(self.lighting, "last_custom_brightness", 20)
                 self._saved_lighting = self.lighting.get_current_lighting()
-                import time
-                # Put keyboard into Gaoshou mode 19 at full brightness 20
-                prof = bytearray(128)
-                prof[6] = 20
-                prof[7] = 2
-                prof[8] = 7
-                prof[9] = 1    # Gaoshou flag
-                prof[10] = 19  # Mode 19 (Gaoshou)
-                prof[11] = 0x20 # Group 0
-                prof[0x38] = 0xFF
-                prof[0x39] = 0xFF
-                for eff in range(1, 21):
-                    off = 56 + eff * 2
-                    if off + 1 < 128:
-                        prof[off] = 20
-                        prof[off + 1] = (2 << 4) | 7
-                self.lighting._commit_led_payload(prof)
-                time.sleep(0.04)
+                self.lighting.enter_custom_matrix_mode(20)
             except Exception:
                 self._saved_lighting = None
 
@@ -265,6 +254,9 @@ class MusicVisualizerController:
         self.streamer.start()
 
     def stop(self):
+        if not self._running:
+            return
+
         self._running = False
         if self.streamer:
             self.streamer.stop()
@@ -272,21 +264,18 @@ class MusicVisualizerController:
 
         if self.lighting and self.dev and self.dev.fd and not self.dev.is_dongle:
             try:
-                # Clear all visualizer keys
-                clear_colors = {k: (0, 0, 0) for k in self._all_eq_keys}
-                self.lighting.send_realtime_matrix_lighting(clear_colors)
+                # Restore original lighting (custom per-key or preset)
+                if self._saved_mode_type == "custom" and self._saved_custom_colors:
+                    self.lighting.set_custom_matrix_lighting(self._saved_custom_colors, self._saved_custom_brightness)
+                elif self._saved_lighting and 1 <= self._saved_lighting.effect <= 17 and self._saved_lighting.brightness > 0:
+                    self.lighting.set_lighting(self._saved_lighting)
+                else:
+                    self.lighting.restore_lighting()
             except Exception:
                 pass
 
-            # Restore original lighting if it was a built-in studio effect (1..17); otherwise default to Rainbow
-            if self._saved_lighting and 1 <= self._saved_lighting.effect <= 17 and self._saved_lighting.brightness > 0:
-                try:
-                    self.lighting.set_lighting(self._saved_lighting)
-                except Exception:
-                    pass
-            else:
-                self.lighting.set_lighting(LightingConfig(effect=1, brightness=20, speed=2, palette_index=7))
-
+        self._saved_lighting = None
+        self._saved_custom_colors.clear()
         self._previous_lit_keys.clear()
 
     def _on_audio_bands(self, bands: List[float]):

@@ -49,6 +49,10 @@ class LightingManager:
         self._cached_color_table: Optional[bytearray] = None
         self.last_debounce: int = 4
         self.last_sleep_minutes: int = 10
+        self.last_preset_config: Optional[LightingConfig] = None
+        self.last_custom_key_colors: Dict[str, Tuple[int, int, int]] = {}
+        self.last_custom_brightness: int = 20
+        self.last_mode_type: str = "preset"
         layout_path = os.path.join(DATA_DIR, "layout.json")
         self.layout_keys: List[Dict[str, Any]] = []
         if os.path.exists(layout_path):
@@ -225,6 +229,10 @@ class LightingManager:
 
     def set_lighting(self, config: LightingConfig, custom_rgb: Optional[tuple[int, int, int]] = None) -> bool:
         """Apply lighting configuration to the keyboard, automatically updating the 420-byte flash table."""
+        if 1 <= config.effect <= 17 and config.brightness > 0:
+            self.last_preset_config = config
+            self.last_mode_type = "preset"
+
         # Check if turning off
         if config.effect == 0 or config.brightness == 0:
             config.brightness = 0
@@ -435,6 +443,55 @@ class LightingManager:
                     return False
             return True
 
+    def enter_custom_matrix_mode(self, brightness: int = 20) -> bool:
+        """Puts the keyboard into Self-define (Gaoshou) mode slot 18 with the specified brightness.
+        Preserves debounce, sleep timeouts, language, and other hardware settings.
+        """
+        if not self.dev.fd:
+            return False
+
+        import time
+
+        # 1. Read existing hardware profile to preserve debounce, sleep timeouts, language, and registers
+        raw = self.get_raw_profile()
+        if raw is not None and len(raw) >= 128 and not all(b == 0 for b in raw):
+            prof = bytearray(raw)
+        else:
+            prof = bytearray(self.build_profile_payload(LightingConfig(effect=18, brightness=brightness, speed=2, palette_index=7)))
+
+        # Preserve / enforce valid debounce and sleep registers
+        deb = prof[2] if prof[2] in (1, 4) else (prof[3] if prof[3] in (1, 4) else self.last_debounce)
+        sleep_m = prof[24] if prof[24] in (0, 10, 20, 40, 60) else self.last_sleep_minutes
+        prof[2] = deb
+        prof[3] = deb
+        prof[24] = sleep_m
+
+        # Set Self-define ("Gaoshou") parameters (Effect 18 per KB.ini GaoshouIndex=17)
+        prof[6] = brightness & 0xFF
+        prof[7] = 2
+        prof[8] = 7
+        prof[9] = 1    # Gaoshou custom light mode flag
+        prof[10] = 18  # Effect 18: Self-define hardware slot
+        prof[11] = 0x20 # Group 0 (0x20 + group)
+        prof[0x38] = 0xFF
+        prof[0x39] = 0xFF
+
+        # Configure slot 18 parameter entry (offset = 56 + 18 * 2 = 92)
+        offset = 56 + 18 * 2
+        if offset + 1 < 128:
+            prof[offset] = brightness & 0xFF
+            prof[offset + 1] = (2 << 4) | 7
+        # Also configure byte 94 (0x5E) as observed in official software
+        if offset + 3 < 128:
+            prof[offset + 2] = brightness & 0xFF
+            prof[offset + 3] = (2 << 4) | 7
+
+        ok = self._commit_led_payload(prof)
+
+        # 2. Wait 150ms for microcontroller to settle into Self-define mode (matching 0x96 ms in official driver)
+        time.sleep(0.15)
+        return ok
+
     def set_custom_matrix_lighting(self, key_colors: Dict[str, Tuple[int, int, int]], brightness: int = 20) -> bool:
         """Apply custom per-key RGB colors to the keyboard ("Gaoshou" mode).
         
@@ -445,31 +502,14 @@ class LightingManager:
         if not self.dev.fd:
             return False
 
-        import time
+        self.last_custom_key_colors = dict(key_colors)
+        self.last_custom_brightness = brightness
+        self.last_mode_type = "custom"
 
-        # 1. Build and commit 128-byte profile with Gaoshou mode 19 and master brightness
-        prof = bytearray(128)
-        prof[6] = brightness & 0xFF
-        prof[7] = 2
-        prof[8] = 7
-        prof[9] = 1    # Gaoshou custom light mode flag
-        prof[10] = 19  # Effect 19: Gaoshou hardware slot
-        prof[11] = 0x20 # Group 0
-        prof[0x38] = 0xFF
-        prof[0x39] = 0xFF
+        if not self.enter_custom_matrix_mode(brightness):
+            return False
 
-        for eff in range(1, 21):
-            offset = 56 + eff * 2
-            if offset + 1 < 128:
-                prof[offset] = brightness & 0xFF
-                prof[offset + 1] = (2 << 4) | 7
-
-        self._commit_led_payload(prof)
-
-        # 2. Short delay for microcontroller to transition into Gaoshou mode
-        time.sleep(0.04)
-
-        # 3. Stream 126-byte palette buffer to CMD_SET_GAME
+        # Stream 378-byte planar RGB buffer to CMD_SET_GAME
         return self.send_realtime_matrix_lighting(key_colors)
 
     def get_custom_profiles_dir(self) -> str:
@@ -525,10 +565,6 @@ class LightingManager:
                 pass
         return False
 
-    def get_current_lighting(self) -> Optional[LightingConfig]:
-        """Read the active hardware lighting state directly from the keyboard.
-        Returns LightingConfig or None if reading failed or keyboard is asleep.
-        """
     def get_raw_profile(self) -> Optional[bytearray]:
         """Read the raw 128-byte hardware profile payload directly from the keyboard.
         
@@ -638,7 +674,7 @@ class LightingManager:
         else:
             brightness, speed, palette_idx = 0, 2, 7
 
-        return LightingConfig(
+        cfg = LightingConfig(
             effect=effect_id,
             brightness=brightness,
             speed=speed,
@@ -646,6 +682,27 @@ class LightingManager:
             debounce=debounce,
             sleep_minutes=sleep_minutes,
         )
+        if 1 <= effect_id <= 17 and brightness > 0:
+            if self.last_preset_config is None or self.last_mode_type == "preset":
+                self.last_preset_config = cfg
+        elif effect_id in (18, 19) or profile[9] == 1:
+            self.last_mode_type = "custom"
+
+        return cfg
+
+    def restore_lighting(self) -> bool:
+        """Restore active lighting (preset or custom per-key) previously set or read from hardware."""
+        if self.last_mode_type == "custom" and self.last_custom_key_colors:
+            return self.set_custom_matrix_lighting(self.last_custom_key_colors, self.last_custom_brightness)
+        elif self.last_preset_config is not None:
+            return self.set_lighting(self.last_preset_config)
+        else:
+            return self.set_lighting(LightingConfig(effect=1, brightness=20, speed=2, palette_index=7))
+
+    def restore_preset_lighting(self) -> bool:
+        """Restore persistent hardware preset effect (modes 1..17)."""
+        cfg = self.last_preset_config or LightingConfig(effect=1, brightness=20, speed=2, palette_index=7)
+        return self.set_lighting(cfg)
 
     def set_hardware_options(self, debounce: int, sleep_minutes: int) -> bool:
         """Update debounce filter (1ms Gaming vs 4ms Office) and wireless sleep timeout in hardware.
